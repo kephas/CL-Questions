@@ -46,3 +46,14 @@
 	      object
 	      (values object t warning)))
       (end-of-file () (values nil t)))))
+
+(defun make-conversion-chain (converters)
+  (labels ((convert (answer converters)
+	     (multiple-value-bind (object problem? text)
+		 (funcall (first converters) answer)
+	       (if (or problem? (null (rest converters)))
+		   (values object problem? text)
+		   (convert object (rest converters))))))
+    (if (null converters)
+	#'identity
+	(lambda (answer) (convert answer converters)))))
