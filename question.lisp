@@ -70,3 +70,19 @@ protocol"
 		 ,var
 		 (values ,var t ,text))
 	   (error () (values ,var t "Erreur interne. ")))))))
+
+(defun positive? (&key strict)
+  (make-check (answer) (format nil "Pas ~apositif. "
+			       (if strict "strictement " ""))
+    (if strict (> answer 0) (>= answer 0))))
+
+(defun in-range? (lower upper &key lstrict ustrict)
+  (make-check (answer) (format nil "Pas entre ~a~a et ~a~a. "
+			       lower (if lstrict "" " (inclus)")
+			       upper (if ustrict "" " (inclus)"))
+    (and (if lstrict (> answer lower) (>= answer lower))
+	 (if ustrict (< answer upper) (<= answer upper)))))
+
+(defun divisible? (divisor)
+  (make-check (answer) (format nil "Pas divisible par ~a" divisor)
+    (zerop (rem answer divisor))))
