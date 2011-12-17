@@ -57,3 +57,16 @@
     (if (null converters)
 	#'identity
 	(lambda (answer) (convert answer converters)))))
+
+
+(defmacro make-check (var-list text &body body)
+  "Convenience macro to create functions that obey the checker
+protocol"
+  (destructuring-bind (var) var-list
+    (once-only (text)
+      `(lambda (,var)
+	 (handler-case
+	     (if (progn ,@body)
+		 ,var
+		 (values ,var t ,text))
+	   (error () (values ,var t "Erreur interne. ")))))))
