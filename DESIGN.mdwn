@@ -19,11 +19,11 @@ mes fonctions de check (comme in-range? ou divisible?) vont partager
 beaucoup de code (mais d'une manière qui permette d'écrire une
 fonction, d'où la nécessité d'une macro).
 
-(defun positive?-v1.0 (&key strict)
-  (lambda (answer)
-    (if (if strict (> answer 0) (>= answer 0))
-	anwser
-	(values answer t "Pas positif. "))))
+      (defun positive?-v1.0 (&key strict)
+        (lambda (answer)
+            (if (if strict (> answer 0) (>= answer 0))
+                anwser
+                (values answer t "Pas positif. "))))
 
 Dans la version 1.0, on voit aussi qu'il serait utile de s'assurer que
 answer est bien un nombre. Dans le case général, il faudrait vérifier
@@ -33,13 +33,13 @@ code-là). Comme on code souvent une macro en partant d'un exemple de
 ce qu'elle devrait donner ou remplacer, je code la version 1.1 en
 tenant compte des exceptions.
 
-(defun positive?-v1.1 (&key strict)
-  (lambda (answer)
-    (handler-case 
-	(if (if strict (> answer 0) (>= answer 0))
-	    anwser
-	    (values answer t "Pas positif. "))
-      (error () (values answer t "Erreur interne. ")))))
+       (defun positive?-v1.1 (&key strict)
+         (lambda (answer)
+         (handler-case 
+             (if (if strict (> answer 0) (>= answer 0))
+                 anwser
+                 (values answer t "Pas positif. "))
+           (error () (values answer t "Erreur interne. ")))))
 
 Cela fait encore plus de code autour de la partie essentielle de la
 fonction, commun à toutes les fonctions de check (on appelle cela du
@@ -48,15 +48,15 @@ code *boilerplate*). La macro s'impose avec force.
 De fait, une fois la macro utilisée, en version 2.0, la partie
 essentielle du code est clairement visible.
 
-(defun positive?-v2.0 (&key strict)
-  (make-check (answer) "Pas positif. "
-    (if strict (> answer 0) (>= answer 0))))
+        (defun positive?-v2.0 (&key strict)
+          (make-check (answer) "Pas positif. "
+              (if strict (> answer 0) (>= answer 0))))
 
 Le message estu seulement un peu inflexible par rapport la fonction
 (qui peut tester pour des nombres positifs ou strictement positifs),
 d'où une ultime modification avec la version 2.1.
 
-(defun positive?-v2.1 (&key strict)
-  (make-check (answer) (format nil "Pas ~apositif. "
-			       (if strict "strictement " ""))
-    (if strict (> answer 0) (>= answer 0))))
+     (defun positive?-v2.1 (&key strict)
+       (make-check (answer) (format nil "Pas ~apositif. "
+           (if strict "strictement " ""))
+               (if strict (> answer 0) (>= answer 0))))
